@@ -16,3 +16,7 @@ Install requirements in Terminal:
 <code>
 pip install -r requirements.txt
 </code>
+
+<img width="852" height="260" alt="image" src="https://github.com/user-attachments/assets/316625f9-bc15-4100-8e7b-95bc17694efa" />
+<img width="862" height="613" alt="image" src="https://github.com/user-attachments/assets/0e7ad118-5ae4-4087-97fd-ee46ee53a416" />
+<img width="862" height="613" alt="image" src="https://github.com/user-attachments/assets/e2480ba1-55f9-450a-a6cf-50715b4be3a4" />
