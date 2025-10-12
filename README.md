@@ -1,5 +1,6 @@
 # Data_Driven_Vibration_to_Noise_Predictor
 Vibration-Noise Predictor (VNP) is a data-driven modelling method for Electric Drive System (EDS) noise prediction. The model takes the vibration acceleration on the EDS housing as input and the noise sound pressure signal as output, which was trained by the weighted MSE as the loss function.
+The results show that the prediction models based on LSTM and GRU perform better, among which the prediction network model based on LSTM has slightly better performance.
 
 - ./data: The datasets for model training are supposed to be put here.
 
