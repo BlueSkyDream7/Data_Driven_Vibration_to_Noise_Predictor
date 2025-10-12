@@ -23,4 +23,4 @@ pip install -r requirements.txt
 
 <img width="868" height="618" alt="image" src="https://github.com/user-attachments/assets/45f7f846-2793-4a7b-9d66-9b172c1ed6a5" />
 
-<img width="1205" height="499" alt="image" src="https://github.com/user-attachments/assets/d1bcc655-7b43-48c4-996c-a46e558b2879" />
+<img width="868" height="359" alt="image" src="https://github.com/user-attachments/assets/d1bcc655-7b43-48c4-996c-a46e558b2879" />
