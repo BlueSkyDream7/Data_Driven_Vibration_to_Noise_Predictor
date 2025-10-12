@@ -19,66 +19,66 @@ sys.path.append(base_dir)
 
 
 def test_train_model():
-    is_new: bool = True                      # 是否创建新网络模型，不创建则加载现有模型
-    abla: bool = True                        # 输入特征是否由12测点三向加速度消融至6测点三向加速度
-    train_data_in_memory: bool = True        # 是否将训练数据加载至内存，内存足够前提下可以加速训练
-    eval_data_in_memory: bool = False        # 是否将测试数据加载至内存
-    window_size: int = 2560                  # 人耳感知频率20Hz~20480Hz，所以选最低20Hz，对应序列长度N
-    forecast_length: int = 2560              # 预测序列长度L
-    hidden_size: int = 128                   # LSTM 隐藏层神经元数
-    batch_size: int = 32                     # 1个batch为1.6s的数据
-    input_size: int = 18 if abla else 36     # 输入Features维度数
-    dataset_id: int = 0                      # Dataset编号 0:All 1:Norm 2:Std 3:SteadyOnly 4:TransientOnly
-    dataset_path: str = "F:\\VN_DL_Dataset"  # Dataset目录
-    mic: str = ''                         # 预测麦克风点位， 'near':仅用近场，'far':仅用远场，‘’:所有麦克风
-    model_name: str = 'model_dual_lstm_abla.pth'                 # 保存的网络模型.pth文件名
-    output_txt_name: str = 'output_dual_lstm_abla'               # 损失曲线记录.txt文件名
+    is_new: bool = True                      # True: Create a new NN model    False: Load pre-trained model 
+    abla: bool = True                        # True: All vibration acceleration signals    False: Ablate some vibration acceleration signals
+    train_data_in_memory: bool = False       # True: Load training dataset to memory (fast)    False: Do not load training dataset to memory (slow)
+    eval_data_in_memory: bool = False        # True: Load evaluation dataset to memory (fast)    False: Do not load evaluation dataset to memory (slow)
+    window_size: int = 2560                  # Ear perceives frequencies: 20Hz to 20480Hz (at least 20Hz)
+    forecast_length: int = 2560              # Predict length: L
+    hidden_size: int = 128                   # Hidden size for hidden layer
+    batch_size: int = 32                     # 1 batch = 1.6s data
+    input_size: int = 18 if abla else 36     # Input size (number of input signals) 
+    dataset_id: int = 0                      # Dataset number
+    dataset_path: str = "./data"             # Dataset directory
+    mic: str = ''                            # Output sound pressure channel selection, 'near' = near-field only，'far' = far-field only，‘’ = all
+    model_name: str = 'model_dual_lstm_abla.pth'                 # Name of saved .pth file (model)
+    output_txt_name: str = 'output_dual_lstm_abla'               # Name of Loss history .txt file (loss profile)
     output_size: int = 5 if mic == 'near' or mic == 'far' else 10
-    eps = torch.tensor(1e-4)                 # 防止权重系数分母接近于0
+    eps = torch.tensor(1e-4)                 # Prevent the denominator from approaching 0
 
-    # 新建或加载现有模型
+    # Create a new model or load an existing model
     model = DualLSTMForecast(input_size=input_size, output_size=output_size, hidden_size=hidden_size,
                              forecast_length=forecast_length) if is_new else torch.load('model_dual_lstm.pth')
 
-    # 加载训练数据集（可用内存至少为80GB时才可使用Memory=True加速训练过程中的数据读取，否则可能因内存不足导致死机）
+    # Load the training dataset (!!! Confirm whether the available memory is large enough to load the dataset !!!)
     dataset = MatDataset(train_mode=True, root_path=dataset_path, window_size=window_size,
                          forecast_length=forecast_length, memory=train_data_in_memory, dataset=dataset_id,
                          mic=mic, abla=abla)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     k = len(dataloader)
 
-    # 定义损失函数和优化器
-    criterion = nn.MSELoss(reduction='none')  # MSE作为损失函数
-    optimizer = optim.Adam(model.parameters(), lr=0.001)  # 使用Adam优化器
+    # Set loss function & Optimizer
+    criterion = nn.MSELoss(reduction='none')
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    # 设置训练的轮数
+    # Number of epoch
     num_epochs = 90
 
-    # 使用余弦式下降学习率调度器
+    # Adopt cosine annealing lr_scheduler
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs, eta_min=0.0001)
 
-    # 检测GPU是否可用，可用则将model转移
+    # Check whether CUDA is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    # 开始训练
+    # Start training
     print('Training started.')
     for epoch in range(num_epochs):
-        t_start = time.time()   # 训练开始计时
-        model.train()  # 将模型设置为训练模式
+        t_start = time.time()   # Start timing
+        model.train()
         running_loss = 0.0
 
         for inputs, targets in dataloader:
-            inputs = inputs.transpose(1, 0)     # 调整为 nn.LSTM 默认输入顺序(T, B, C) batch_first 默认为 false
-            targets = targets.transpose(1, 0)   # 调整为 nn.LSTM 默认输出顺序(T, B, C) batch_first 默认为 false
+            inputs = inputs.transpose(1, 0)     # nn.LSTM: (T, B, C) 
+            targets = targets.transpose(1, 0)   # nn.LSTM: (T, B, C) 
 
-            # 梯度清零
+            # Clear gradient
             optimizer.zero_grad()
 
-            # 前向传播
+            # Forward propagation
             outputs = model(inputs)
 
-            # 计算损失
+            # Loss calculation
             loss = criterion(outputs, targets)
             targets_square_mean = []
             loss_mean = []
@@ -91,23 +91,23 @@ def test_train_model():
             loss_final = loss_mean / targets_square_mean
             loss_final = torch.mean(loss_final)
 
-            # 反向传播
+            # Back propagation
             loss_final.backward()
             
-            # 参数更新
+            # Update model parameters
             optimizer.step()
 
-            # 累计损失
+            # Loss accumulation
             running_loss += loss_final.item()
 
-        # 变学习率步进
+        # Variable lr stepping
         scheduler.step()
 
-        # 训练时间
-        t_end = time.time()     # 训练结束计时
+        # Get training time consumption for each 1 epoch
+        t_end = time.time()     # Stop timing
         train_time = t_end - t_start
 
-        # 打印每轮的平均损失、学习率与耗时
+        # Print average loss, lr and time consumption for 1 epoch of training
         print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/k:.7f}"
               f"  Learning Rate: {optimizer.param_groups[0]['lr']:.5f}"
               f"  Elapsed time(s): {train_time:.3f}")
@@ -117,7 +117,7 @@ def test_train_model():
             print(f"Loss: {running_loss/k:.7f}")
             sys.stdout = original_stdout
 
-        # 每5个Epoch进行一次测试
+        # Evaluate model performance for every 5 epochs of training
         if (epoch + 1) % 5 == 0:
             t_start = time.time()
             eval_loss = test_eval_model(model, window_size, forecast_length, output_size, mic, dataset_path,
@@ -137,3 +137,4 @@ def test_train_model():
 
 if __name__ == '__main__':
     test_train_model()
+
