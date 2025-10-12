@@ -8,14 +8,14 @@ import time
 import math
 
 
-class MatDataset(dataset.Dataset):  # 继承类：dataset.Dataset
+class MatDataset(dataset.Dataset):
     def __init__(self, train_mode, root_path, window_size, forecast_length, memory, dataset, mic, abla):
-        self.train_mode = train_mode    # 训练集：train_mode = 1    测试集：train_mode = 0
-        # files_path下需要有“Train”文件夹和“Test”文件夹，分别作为训练集和测试集
+        self.train_mode = train_mode    # Read dataset for Training：train_mode = 1    Read dataset for Training：train_mode = 0
         self.window_size = window_size
         self.forecast_length = forecast_length
-        files_path = root_path + '/Train' if train_mode else root_path + '/Test'
-        files_list = os.listdir(files_path)   # 返回files_path及其子文件夹下所有文件名
+        files_path = root_path + '/Train' if train_mode else root_path + '/Test'    # The files_path directory must contain both a 'Train' folder and a 'Test' folder, 
+                                                                                    # which will serve as the training dataset and test dataset respectively
+        files_list = os.listdir(files_path)
         self.data_path = os.path.join(files_path, files_list[dataset])
         self.memory = memory
         self.abla = abla
@@ -77,9 +77,9 @@ class MatDataset(dataset.Dataset):  # 继承类：dataset.Dataset
         return length
 
 
-# 调试
+# Debug
 if __name__ == '__main__':
-    ROOT_PATH = "F:\\VN_DL_Dataset"
+    ROOT_PATH = "./data"
     start_time = time.time()
     dataset = MatDataset(train_mode=False, root_path=ROOT_PATH, window_size=2560, forecast_length=2560, memory=True,
                          dataset=0, mic='far', abla=False)
@@ -90,3 +90,4 @@ if __name__ == '__main__':
         print(f'load time {end_time - start_time :.4f}')
         k = len(dataset)
         print('')
+
