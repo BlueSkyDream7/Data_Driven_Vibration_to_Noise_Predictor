@@ -31,8 +31,8 @@ def test_eval_model(model, window_size, forecast_length, output_size, mic, data_
 
     # t_start = time.time()
     for inputs, targets in dataloader:
-        inputs = inputs.transpose(1, 0)     # nn.LSTM 默认输入顺序为(seq, batch, feature)
-        targets = targets.transpose(1, 0)   # nn.LSTM 默认输出顺序为(seq, batch, feature)
+        inputs = inputs.transpose(1, 0)     # nn.LSTM default output: (seq, batch, feature)
+        targets = targets.transpose(1, 0)   # nn.LSTM default output: (seq, batch, feature)
         outputs = model(inputs)
         loss = criterion(outputs, targets)
         # mae_loss = mae_criterion(outputs, targets)
@@ -64,17 +64,19 @@ def test_eval_model(model, window_size, forecast_length, output_size, mic, data_
     return eval_loss
 
 
+# Debug
 if __name__ == '__main__':
     mdl = torch.load("../train/model_rnn_far_transient.pth")
-    dataset_path = "F:\\VN_DL_Dataset"
-    ws = 2560  # 人耳频率 20Hz~20480Hz，所以选最低20Hz
-    fl = 2560  # 序列预测序列
-    os = 5
+    dataset_path = "./data"
+    ws = 2560  # The human ear can perceive frequencies from 20Hz to 20,480Hz, therefore a lower limit of 20Hz was selected.
+    fl = 2560  # seq2seq
+    os = 10
     micp = 'far'
-    dsid = 4
+    dsid = 0
     loss, mae, rmse, r2 = test_eval_model(mdl, ws, fl, os, micp, dataset_path, dsid, memory=True, abla=False, eps=1e-4)
     print(loss)
     print(mae)
     print(rmse)
     print(r2)
+
 
