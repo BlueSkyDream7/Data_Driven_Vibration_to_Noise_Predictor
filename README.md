@@ -10,3 +10,8 @@ Vibration-Noise Predictor (VNP) is a data-driven modelling method for Electric D
 - ./models: The folder which contains different kinds of VNP models, including neural network models based on RNN/LSTM/GRU, the structure of the models are configured here.
 
 - ./train: The **main** training program of the project, hyperparameters such as lr, hidden size, batch size and window size for model training are set here. In addition, models and loss histories are saved here after the training process completed.
+
+Install requirements:
+<code>```bash
+pip install -r requirements.txt
+</code>
