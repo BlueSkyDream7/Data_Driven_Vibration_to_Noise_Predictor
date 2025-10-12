@@ -1,0 +1,4 @@
+Eval Loss: 0.5999808
+Eval Loss: 0.5391232
+Eval Loss: 0.5036183
+Eval Loss: 0.4950952

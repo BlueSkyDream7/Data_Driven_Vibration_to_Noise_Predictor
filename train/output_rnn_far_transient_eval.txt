@@ -1,0 +1,19 @@
+Eval Loss: 1.0214472
+Eval Loss: 1.0726083
+Eval Loss: 1.0103240
+Eval Loss: 1.0183248
+Eval Loss: 1.0798163
+Eval Loss: 1.0301598
+Eval Loss: 1.0134629
+Eval Loss: 1.0000538
+Eval Loss: 1.0086843
+Eval Loss: 0.9951219
+Eval Loss: 0.9913991
+Eval Loss: 0.9876658
+Eval Loss: 0.9778566
+Eval Loss: 0.9692283
+Eval Loss: 0.9560958
+Eval Loss: 0.9171869
+Eval Loss: 0.9202649
+Eval Loss: 0.9156847
+
