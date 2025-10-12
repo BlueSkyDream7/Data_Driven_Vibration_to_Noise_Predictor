@@ -18,5 +18,9 @@ pip install -r requirements.txt
 </code>
 
 <img width="852" height="260" alt="image" src="https://github.com/user-attachments/assets/316625f9-bc15-4100-8e7b-95bc17694efa" />
-<img width="862" height="613" alt="image" src="https://github.com/user-attachments/assets/0e7ad118-5ae4-4087-97fd-ee46ee53a416" />
-<img width="862" height="613" alt="image" src="https://github.com/user-attachments/assets/e2480ba1-55f9-450a-a6cf-50715b4be3a4" />
+
+<img width="868" height="616" alt="image" src="https://github.com/user-attachments/assets/b8534d3d-42e1-467b-bf44-a1b957f9ae50" />
+
+<img width="868" height="618" alt="image" src="https://github.com/user-attachments/assets/45f7f846-2793-4a7b-9d66-9b172c1ed6a5" />
+
+<img width="1205" height="499" alt="image" src="https://github.com/user-attachments/assets/d1bcc655-7b43-48c4-996c-a46e558b2879" />
