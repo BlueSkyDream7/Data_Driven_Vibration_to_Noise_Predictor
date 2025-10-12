@@ -4,21 +4,21 @@ from torch.nn import functional as f
 
 class SimpleLSTM(nn.Module):
     def __init__(self, input_size, output_size, hidden_size, dr=0.0):
-        super(SimpleLSTM, self).__init__()                      # 继承父类初始化函数
-        # self.bn1 = nn.BatchNorm1d(input_size, affine=False)     # 归一化层（input_size个输入和输出）
-        self.linearIn = nn.Linear(input_size, hidden_size)      # 线性输入层（input_size个输入 hidden_size个输出）
+        super(SimpleLSTM, self).__init__()                      
+        # self.bn1 = nn.BatchNorm1d(input_size, affine=False)   # Batch Normalization
+        self.linearIn = nn.Linear(input_size, hidden_size)      # Linear Fully Connected Input Layer
         self.lstm = nn.LSTM(
             hidden_size,
             hidden_size,
             1,
             dropout=dr,
-        )                                                       # LSTM层（hidden_size个输入 hidden_size个输出 无dropout）
-        self.linearOut = nn.Linear(hidden_size, output_size)    # 线性输出层（hidden_size个输入 output_size个输出）
+        )                                                       # LSTM Layer
+        self.linearOut = nn.Linear(hidden_size, output_size)    # Linear Fully Connected Output Layer
 
-    def forward(self, x):                                       # 定义神经网络的前向传播函数forward，x即为输入
+    def forward(self, x):                                       # Forward propagation function
         x0 = f.leaky_relu(self.linearIn(x))
         out_lstm, (hn, cn) = self.lstm(x0)
-        return self.linearOut(out_lstm)                         # 线性输入 -> ReLU -> LSTM -> 线性输出
+        return self.linearOut(out_lstm)                         # LinearIn -> ReLU -> LSTM -> LinearOut
 
 
 class SimpleLSTMForecast(SimpleLSTM):
@@ -28,9 +28,10 @@ class SimpleLSTMForecast(SimpleLSTM):
         self.output_size = output_size
 
     def forward(self, x):
-        # 调用父类的forward方法获取完整的输出
+        # Call the forward method of the parent class to obtain the complete output
         full_output = super(SimpleLSTMForecast, self).forward(x)
 
-        # 重塑输出以匹配目标形状
+        # Reshape output
         forecast_output = full_output[-self.forecast_length:, :, :]
         return forecast_output
+
