@@ -79,7 +79,7 @@ class MatDataset(dataset.Dataset):
 
 # Debug
 if __name__ == '__main__':
-    ROOT_PATH = "../data"
+    ROOT_PATH = "./data"
     start_time = time.time()
     dataset = MatDataset(train_mode=False, root_path=ROOT_PATH, window_size=2560, forecast_length=2560, memory=True,
                          dataset=0, mic='far', abla=False)
