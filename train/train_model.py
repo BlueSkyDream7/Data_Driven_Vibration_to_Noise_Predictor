@@ -29,7 +29,7 @@ def test_train_model():
     batch_size: int = 32                     # 1 batch = 1.6s data
     input_size: int = 18 if abla else 36     # Input size (number of input signals) 
     dataset_id: int = 0                      # Dataset number
-    dataset_path: str = "./data"             # Dataset directory
+    dataset_path: str = "../data"             # Dataset directory
     mic: str = ''                            # Output sound pressure channel selection, 'near' = near-field only，'far' = far-field only，‘’ = all
     model_name: str = 'model_dual_lstm_abla.pth'                 # Name of saved .pth file (model)
     output_txt_name: str = 'output_dual_lstm_abla'               # Name of Loss history .txt file (loss profile)
